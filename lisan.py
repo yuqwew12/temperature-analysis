@@ -11,18 +11,18 @@ app = Flask(__name__)
 # 设置你的API密钥
 API_KEY = "yuzhengyu131426"
 
-
 def validate_api_key(api_key):
     return api_key == API_KEY
-
 
 def fetch_hot_news_with_selenium(url):
     # 设置无头模式（可选）
     edge_options = webdriver.EdgeOptions()
     edge_options.add_argument("--headless")
+    edge_options.add_argument("--disable-gpu")
+    edge_options.add_argument("--no-sandbox")
 
-    # 设置WebDriver路径，使用原始字符串避免转义问题
-    service = Service(r"F:\Edgedown\edgedriver_win64\msedgedriver.exe")
+    # 设置WebDriver路径
+    service = Service("/usr/local/bin/msedgedriver")
 
     # 创建WebDriver对象
     driver = webdriver.Edge(service=service, options=edge_options)
@@ -79,11 +79,9 @@ def fetch_hot_news_with_selenium(url):
 
     return news_data
 
-
 @app.route('/')
 def index():
     return "Hello, this is the Flask server!"
-
 
 @app.route('/fetch-news', methods=['POST'])
 def fetch_news():
@@ -103,7 +101,6 @@ def fetch_news():
         return jsonify(news_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
